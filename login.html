@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FedEx</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/fedex-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <svg class="fedex-logo" width="120" height="40" viewBox="0 0 120 40">
+                        <path d="M0,0 L40,0 L40,40 L0,40 Z" fill="#4D148C"/>
+                        <path d="M40,0 L80,0 L80,40 L40,40 Z" fill="#FF6600"/>
+                        <path d="M8.5,12 L19,12 L19,16.5 L13,16.5 L13,18.5 L18.5,18.5 L18.5,22.5 L13,22.5 L13,28 L8.5,28 Z" fill="white"/>
+                        <path d="M20,12 L24.5,12 L24.5,23.5 L30,23.5 L30,28 L20,28 Z" fill="white"/>
+                        <path d="M30.5,12 L35,12 L38,19 L38,12 L42.5,12 L42.5,28 L38,28 L35,21 L35,28 L30.5,28 Z" fill="white"/>
+                        <path d="M44,12 L54.5,12 L54.5,16.5 L48.5,16.5 L48.5,18.5 L54,18.5 L54,22.5 L48.5,22.5 L48.5,24.5 L54.5,24.5 L54.5,28 L44,28 Z" fill="white"/>
+                        <path d="M56,12 L60.5,12 L60.5,24.5 L66,24.5 L66,28 L56,28 Z" fill="white"/>
+                        <path d="M67,28 L71.5,28 L71.5,12 L67,12 Z" fill="white"/>
+                        <path d="M73,28 L77.5,28 L77.5,12 L73,12 Z" fill="white"/>
+                    </svg>
+                </a>
+            </div>
+            <nav>
+                <ul class="main-nav">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shipping.html">Ship</a></li>
+                    <li><a href="tracking.html">Track</a></li>
+                    <li><a href="#">Locations</a></li>
+                    <li><a href="#">Business Solutions</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="login.html" class="btn btn-outline active">Login</a>
+                <a href="signup.html" class="btn btn-primary">Sign Up</a>
+                <button class="mobile-menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <h1>Log In to FedEx</h1>
+                    <p>Access your FedEx account to manage shipments, track packages, and more.</p>
+                </div>
+                
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fas fa-lock"></i></span>
+                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                            <span class="password-toggle" onclick="togglePassword('password')"><i class="fas fa-eye"></i></span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                    
+                    <div class="auth-divider">
+                        <span>or</span>
+                    </div>
+                    
+                    <div class="social-login">
+                        <button type="button" class="btn btn-social btn-google">
+                            <i class="fab fa-google"></i> Continue with Google
+                        </button>
+                        <button type="button" class="btn btn-social btn-apple">
+                            <i class="fab fa-apple"></i> Continue with Apple
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About FedEx</a></li>
+                        <li><a href="#">Investor Relations</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Newsroom</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="shipping.html">FedEx Express®</a></li>
+                        <li><a href="shipping.html">FedEx Ground®</a></li>
+                        <li><a href="shipping.html">FedEx Freight®</a></li>
+                        <li><a href="shipping.html">FedEx International®</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Customer Support</a></li>
+                        <li><a href="#">Shipping Guide</a></li>
+                        <li><a href="#">Service Alerts</a></li>
+                        <li><a href="#">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <address>
+                        <p>FedEx Corporation</p>
+                        <p>942 South Shady Grove Road</p>
+                        <p>Memphis, TN 38120</p>
+                        <p>1-800-GoFedEx</p>
+                        <p><a href="mailto:support@fedex.com">Contact Support</a></p>
+                    </address>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="copyright">
+                    <p>&copy; 2023 FedEx. All rights reserved.</p>
+                </div>
+                <div class="legal-links">
+                    <a href="#">Terms of Use</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Cookie Settings</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>
