@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Package - FedEx</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/tracking.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/fedex-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <svg class="fedex-logo" width="120" height="40" viewBox="0 0 120 40">
+                        <path d="M0,0 L40,0 L40,40 L0,40 Z" fill="#4D148C"/>
+                        <path d="M40,0 L80,0 L80,40 L40,40 Z" fill="#FF6600"/>
+                        <path d="M8.5,12 L19,12 L19,16.5 L13,16.5 L13,18.5 L18.5,18.5 L18.5,22.5 L13,22.5 L13,28 L8.5,28 Z" fill="white"/>
+                        <path d="M20,12 L24.5,12 L24.5,23.5 L30,23.5 L30,28 L20,28 Z" fill="white"/>
+                        <path d="M30.5,12 L35,12 L38,19 L38,12 L42.5,12 L42.5,28 L38,28 L35,21 L35,28 L30.5,28 Z" fill="white"/>
+                        <path d="M44,12 L54.5,12 L54.5,16.5 L48.5,16.5 L48.5,18.5 L54,18.5 L54,22.5 L48.5,22.5 L48.5,24.5 L54.5,24.5 L54.5,28 L44,28 Z" fill="white"/>
+                        <path d="M56,12 L60.5,12 L60.5,24.5 L66,24.5 L66,28 L56,28 Z" fill="white"/>
+                        <path d="M67,28 L71.5,28 L71.5,12 L67,12 Z" fill="white"/>
+                        <path d="M73,28 L77.5,28 L77.5,12 L73,12 Z" fill="white"/>
+                    </svg>
+                </a>
+            </div>
+            <nav>
+                <ul class="main-nav">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shipping.html">Ship</a></li>
+                    <li><a href="tracking.html" class="active">Track</a></li>
+                    <li><a href="#">Locations</a></li>
+                    <li><a href="#">Business Solutions</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="login.html" class="btn btn-outline">Login</a>
+                <a href="signup.html" class="btn btn-primary">Sign Up</a>
+                <button class="mobile-menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Track Your Shipment</h1>
+            <p>Enter your tracking number to get detailed information about your package's journey.</p>
+        </div>
+    </section>
+
+    <!-- Tracking Form Section -->
+    <section class="tracking-section">
+        <div class="container">
+            <div class="tracking-container">
+                <div class="tracking-tabs">
+                    <button class="tab-btn active" data-tab="single-tracking">Track a Package</button>
+                    <button class="tab-btn" data-tab="multi-tracking">Track Multiple Packages</button>
+                </div>
+                
+                <div class="tab-content active" id="single-tracking">
+                    <form id="tracking-form" class="tracking-form">
+                        <div class="form-group">
+                            <label for="tracking-number">Tracking Number</label>
+                            <div class="input-group">
+                                <input type="text" id="tracking-number" placeholder="Enter your tracking number" required>
+                                <button type="submit" class="btn btn-primary">Track</button>
+                            </div>
+                            <p class="form-hint">Example: AB1234567890</p>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="tab-content" id="multi-tracking">
+                    <form id="multi-tracking-form" class="tracking-form">
+                        <div class="form-group">
+                            <label for="multi-tracking-numbers">Tracking Numbers</label>
+                            <textarea id="multi-tracking-numbers" placeholder="Enter up to 10 tracking numbers, one per line" rows="5" required></textarea>
+                            <p class="form-hint">Enter up to 10 tracking numbers, one per line</p>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Track All</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Multiple Tracking Results -->
+            <div id="multi-tracking-results" class="multi-tracking-results" style="display: none;">
+                <!-- Results will be populated by JavaScript -->
+            </div>
+            
+            <!-- Single Tracking Details -->
+            <div id="tracking-details" class="tracking-details" style="display: none;">
+                <div class="tracking-header">
+                    <h2>Shipment Details</h2>
+                    <div class="tracking-actions">
+                        <button class="btn btn-outline btn-sm" id="share-tracking">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                        <button class="btn btn-outline btn-sm" id="print-tracking">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tracking-grid">
+                    <!-- Package Information -->
+                    <div class="tracking-card package-info-card">
+                        <h3>Package Information</h3>
+                        <div class="package-info">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Addresses -->
+                    <div class="tracking-card addresses-card">
+                        <h3>Shipping Addresses</h3>
+                        <div class="addresses">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Delivery Map -->
+                    <div class="tracking-card map-card">
+                        <h3>Delivery Map</h3>
+                        <div class="delivery-map">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Tracking Timeline -->
+                    <div class="tracking-card timeline-card">
+                        <h3>Tracking History</h3>
+                        <div class="tracking-timeline">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tracking-footer">
+                    <div class="delivery-options">
+                        <h3>Delivery Options</h3>
+                        <div class="options-grid">
+                            <div class="option-card">
+                                <div class="option-icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <h4>Reschedule Delivery</h4>
+                                <p>Choose a different delivery date that works better for you.</p>
+                                <button class="btn btn-outline btn-sm">Reschedule</button>
+                            </div>
+                            <div class="option-card">
+                                <div class="option-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <h4>Change Delivery Address</h4>
+                                <p>Redirect your package to a different address.</p>
+                                <button class="btn btn-outline btn-sm">Change Address</button>
+                            </div>
+                            <div class="option-card">
+                                <div class="option-icon">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <h4>Hold at Location</h4>
+                                <p>Have your package held at a nearby FastShip location.</p>
+                                <button class="btn btn-outline btn-sm">Hold Package</button>
+                            </div>
+                            <div class="option-card">
+                                <div class="option-icon">
+                                    <i class="fas fa-signature"></i>
+                                </div>
+                                <h4>Delivery Instructions</h4>
+                                <p>Add special instructions for the delivery driver.</p>
+                                <button class="btn btn-outline btn-sm">Add Instructions</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tracking-help">
+                        <h3>Need Help?</h3>
+                        <p>If you have questions about your shipment or need assistance, our customer service team is here to help.</p>
+                        <div class="help-actions">
+                            <a href="support.html" class="btn btn-primary">Contact Support</a>
+                            <a href="faq.html" class="btn btn-outline">View FAQs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Tracking FAQ Section -->
+    <section class="tracking-faq">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How do I track my package?</h3>
+                        <span class="faq-toggle"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You can track your package by entering your tracking number in the form above. Your tracking number is a 12-character alphanumeric code that was provided in your shipping confirmation email or receipt.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What if I lost my tracking number?</h3>
+                        <span class="faq-toggle"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>If you've lost your tracking number, you can find it in your shipping confirmation email or by logging into your FastShip account. If you're the recipient, please contact the sender to request the tracking number.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Why hasn't my tracking information updated?</h3>
+                        <span class="faq-toggle"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Tracking information is typically updated when your package arrives at a new facility or when a delivery attempt is made. There may be periods where your package is in transit between facilities and no updates are available. If your tracking hasn't updated for more than 48 hours, please contact customer support.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I change my delivery address?</h3>
+                        <span class="faq-toggle"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, you can request a delivery address change for most packages that haven't yet been delivered. Use the "Change Delivery Address" option in the Delivery Options section after tracking your package. Additional fees may apply for this service.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What does "Out for Delivery" mean?</h3>
+                        <span class="faq-toggle"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>"Out for Delivery" means your package has been loaded onto a delivery vehicle and is scheduled to be delivered that day. Delivery times vary based on your location and the driver's route.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What is a delivery exception?</h3>
+                        <span class="faq-toggle"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>A delivery exception occurs when an unexpected event delays delivery of your package. This could include weather conditions, incomplete address information, or no one available to sign for the package. The tracking information will provide specific details about the exception and next steps.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-more">
+                <p>Have more questions? Visit our <a href="faq.html">complete FAQ section</a> or <a href="contact.html">contact our support team</a>.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <h2><span class="highlight">Fast</span>Ship</h2>
+                    </div>
+                    <p>Your trusted partner for domestic and international shipping solutions.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="services/express.html">Express Delivery</a></li>
+                        <li><a href="services/international.html">International Shipping</a></li>
+                        <li><a href="services/ground.html">Ground Shipping</a></li>
+                        <li><a href="services/business.html">Business Solutions</a></li>
+                        <li><a href="services/freight.html">Freight Services</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="press.html">Press Releases</a></li>
+                        <li><a href="sustainability.html">Sustainability</a></li>
+                        <li><a href="investors.html">Investor Relations</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="help.html">Help Center</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="faq.html">FAQs</a></li>
+                        <li><a href="claims.html">File a Claim</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact</h3>
+                    <address>
+                        <p><i class="fas fa-map-marker-alt"></i> 123 Shipping Lane, Suite 400<br>Logistics City, LC 10001</p>
+                        <p><i class="fas fa-phone-alt"></i> <a href="tel:+18005551234">1-800-555-1234</a></p>
+                        <p><i class="fas fa-envelope"></i> <a href="mailto:info@fastship.com">info@fastship.com</a></p>
+                    </address>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="copyright">
+                    <p>&copy; 2023 FastShip Inc. All rights reserved.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="cookies.html">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/tracking.js"></script>
+</body>
+</html>
