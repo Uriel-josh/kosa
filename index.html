@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FedEx - Shipping, Tracking & Delivery Services</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/fedex-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <svg class="fedex-logo" width="150" height="50" viewBox="0 0 150 50">
+                        <!-- Purple background for FedEx -->
+                        <rect x="0" y="0" width="85" height="50" fill="#4D148C"/>
+                        <!-- Orange background for Express -->
+                        <rect x="85" y="0" width="65" height="50" fill="#FF6600"/>
+                        
+                        <!-- FedEx letters in white -->
+                        <!-- F -->
+                        <path d="M10,12 H28 V18 H17 V21 H26 V27 H17 V38 H10 V12 Z" fill="white"/>
+                        
+                        <!-- e -->
+                        <path d="M30,12 H37 V31 H47 V38 H30 V12 Z" fill="white"/>
+                        
+                        <!-- d -->
+                        <path d="M49,12 H56 L62,25 V12 H69 V38 H62 L56,25 V38 H49 V12 Z" fill="white"/>
+                        
+                        <!-- E -->
+                        <path d="M71,12 H89 V18 H78 V21 H87 V27 H78 V32 H89 V38 H71 V12 Z" fill="white"/>
+                        
+                        <!-- x - designed to create the hidden arrow in negative space -->
+                        <path d="M91,12 H99 L105,21 L111,12 H119 L109,25 L119,38 H111 L105,29 L99,38 H91 L101,25 L91,12 Z" fill="white"/>
+                    </svg>
+                </a>
+            </div>
+            <nav>
+                <ul class="main-nav">
+                    <li class="dropdown">
+                        <a href="index.html" class="active">Shipping <i class="fas fa-chevron-down"></i></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="tracking.html">Tracking <i class="fas fa-chevron-down"></i></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Support <i class="fas fa-chevron-down"></i></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Account <i class="fas fa-chevron-down"></i></a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="login.html" class="sign-in-link">Sign Up/Log In <i class="fas fa-user-circle"></i></a>
+                <a href="#" class="search-icon"><i class="fas fa-search"></i></a>
+                <button class="mobile-menu-button">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner Section with Tracking Widget -->
+    <section class="hero-banner" style="background-image: url('https://www.fedex.com/content/dam/fedex/us-united-states/FedEx-Home/images/2023/q4/FedEx_Home_Hero_Textiles_1440x576.jpg'); background-size: cover; background-position: center;">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="welcome-text">Welcome to FedEx</h1>
+                
+                <div class="tracking-widget">
+                    <div class="tracking-tabs">
+                        <div class="tab active">
+                            <div class="tab-icon">
+                                <img src="images/track-icon.svg" alt="Track" onerror="this.src='https://www.fedex.com/content/dam/fedex/us-united-states/tracking/images/track-icon.svg'; this.onerror=null;">
+                            </div>
+                            <span>TRACK</span>
+                        </div>
+                        <div class="tab">
+                            <div class="tab-icon">
+                                <img src="images/rate-icon.svg" alt="Rate & Transit Times" onerror="this.src='https://www.fedex.com/content/dam/fedex/us-united-states/tracking/images/rate-icon.svg'; this.onerror=null;">
+                            </div>
+                            <span>RATE & TRANSIT TIMES</span>
+                        </div>
+                        <div class="tab">
+                            <div class="tab-icon">
+                                <img src="images/ship-icon.svg" alt="Ship" onerror="this.src='https://www.fedex.com/content/dam/fedex/us-united-states/tracking/images/ship-icon.svg'; this.onerror=null;">
+                            </div>
+                            <span>SHIP</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tracking-form-container">
+                        <form id="tracking-form">
+                            <input type="text" id="tracking-number" placeholder="TRACKING ID" required>
+                            <button type="submit" class="track-btn">TRACK <i class="fas fa-arrow-right"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Manage Your Shipments Section -->
+    <section class="manage-shipments">
+        <div class="container">
+            <h2 class="section-title">Manage your shipments</h2>
+            
+            <div class="shipment-options">
+                <div class="option-card">
+                    <div class="option-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>SCHEDULE PICKUP</h3>
+                </div>
+                
+                <div class="option-card">
+                    <div class="option-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3>REDIRECT YOUR PACKAGE</h3>
+                </div>
+                
+                <div class="option-card">
+                    <div class="option-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>FIND LOCATIONS</h3>
+                </div>
+                
+                <div class="option-card">
+                    <div class="option-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <h3>FUEL SURCHARGE</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rate Surcharge Section -->
+    <section class="rate-surcharge">
+        <div class="container">
+            <h2 class="section-title">Nigeria Rate & Surcharge Dollarization</h2>
+            <p class="surcharge-text">Effective August 1, 2024, due to changes in market conditions and high currency devaluation in Nigeria, FedEx will be changing the rating currency to USD from local currency (NGN). <a href="#" class="link-text">Click here</a> for more information.</p>
+        </div>
+    </section>
+
+    <!-- Account CTA Section -->
+    <section class="account-cta">
+        <div class="container">
+            <div class="cta-box">
+                <div class="cta-content">
+                    <h2>Sign up now to enjoy personalized shipping rates!</h2>
+                    <p>Benefit from our services and solutions designed to meet all of your shipping needs.</p>
+                </div>
+                <div class="cta-button">
+                    <a href="signup.html" class="btn btn-orange">OPEN AN ACCOUNT</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- International Shipping Section -->
+    <section class="international-shipping">
+        <div class="container">
+            <div class="shipping-row">
+                <div class="shipping-content">
+                    <h2>Thinking of shipping to the USA?</h2>
+                    <p>Changing U.S. Tariffs and Customs Regulations can affect your shipping. Get help navigating the latest international shipping requirements.</p>
+                    <a href="#" class="btn btn-outline">LEARN MORE</a>
+                </div>
+                <div class="shipping-image">
+                    <img src="https://www.fedex.com/content/dam/fedex/us-united-states/FedEx-Home/images/2023/q4/FedEx_Home_Shipping_to_US_720x480.jpg" alt="International Shipping" onerror="this.src='images/international-shipping.jpg'; this.onerror=null;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cricket Partnership Section -->
+    <section class="cricket-partnership">
+        <div class="container">
+            <div class="partnership-row">
+                <div class="partnership-image">
+                    <img src="https://www.fedex.com/content/dam/fedex/us-united-states/FedEx-Home/images/2023/q4/FedEx_Home_Cricket_720x480.jpg" alt="Cricket Partnership" onerror="this.src='images/cricket-partnership.jpg'; this.onerror=null;">
+                </div>
+                <div class="partnership-content">
+                    <p>Beginning 2025, we are proud to team up with two powerhouse franchises in the world of cricket: the</p>
+                    <h2>Chennai Super Kings (CSK) and the Joburg Super Kings (JSK).</h2>
+                    <a href="#" class="btn btn-outline">LEARN MORE</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fraud Prevention Section -->
+    <section class="fraud-prevention">
+        <div class="container">
+            <div class="fraud-row">
+                <div class="fraud-content">
+                    <h2>Recognize & Prevent Fraud</h2>
+                    <p>Common Warning Signs of Mail, Text or Online Scams and what to do if you receive such communications.</p>
+                    <a href="#" class="btn btn-outline">LEARN MORE</a>
+                </div>
+                <div class="fraud-image">
+                    <img src="https://www.fedex.com/content/dam/fedex/us-united-states/FedEx-Home/images/2023/q4/FedEx_Home_Fraud_720x480.jpg" alt="Fraud Prevention" onerror="this.src='images/fraud-prevention.jpg'; this.onerror=null;">
+                </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid Section -->
+    <section class="services-grid-section">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            <div class="services-grid">
+                <div class="service-grid-item">
+                    <div class="service-grid-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h3>FedEx Express®</h3>
+                    <p>Time-definite delivery services, including overnight and 2-day options for urgent shipments.</p>
+                    <a href="#" class="btn btn-text">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="service-grid-item">
+                    <div class="service-grid-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <h3>FedEx International®</h3>
+                    <p>Reliable delivery to over 220 countries and territories with customs clearance expertise.</p>
+                    <a href="#" class="btn btn-text">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="service-grid-item">
+                    <div class="service-grid-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h3>FedEx Ground®</h3>
+                    <p>Cost-effective delivery for packages weighing up to 150 lbs with day-definite delivery.</p>
+                    <a href="#" class="btn btn-text">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="service-grid-item">
+                    <div class="service-grid-icon">
+                        <i class="fas fa-truck-loading"></i>
+                    </div>
+                    <h3>FedEx Freight®</h3>
+                    <p>Reliable delivery for palletized freight over 150 lbs with a range of service options.</p>
+                    <a href="#" class="btn btn-text">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="features-content">
+                <h2 class="section-title">Why Choose FedEx?</h2>
+                <ul class="features-list">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h3>FedEx Tracking®</h3>
+                            <p>Monitor your shipments 24/7 with detailed, real-time tracking updates.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h3>Money-Back Guarantee</h3>
+                            <p>We stand by our time-definite delivery services with our guarantee.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h3>FedEx Delivery Manager®</h3>
+                            <p>Customize your home deliveries to fit your schedule and preferences.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h3>FedEx® Packaging</h3>
+                            <p>Access a variety of free packaging options for FedEx Express shipments.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h3>Global Network</h3>
+                            <p>Access to over 220 countries and territories with customs clearance expertise.</p>
+                        </div>
+                    </li>
+                </ul>
+                <a href="#" class="btn btn-secondary">About FedEx</a>
+            </div>
+            <div class="features-image">
+                <img src="images/fedex-features.svg" alt="FedEx Features">
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Tools Section -->
+    <section class="business-tools">
+        <div class="container">
+            <div class="tools-row">
+                <div class="tools-content">
+                    <h2>Business Tools & Resources</h2>
+                    <p>Streamline your shipping process with our suite of business tools designed to save you time and money.</p>
+                    <ul class="tools-list">
+                        <li><i class="fas fa-check-circle"></i> FedEx Ship Manager</li>
+                        <li><i class="fas fa-check-circle"></i> Billing Online</li>
+                        <li><i class="fas fa-check-circle"></i> Custom Clearance Tools</li>
+                        <li><i class="fas fa-check-circle"></i> Packaging Solutions</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary">Explore Tools</a>
+                </div>
+                <div class="tools-image">
+                    <img src="https://www.fedex.com/content/dam/fedex/us-united-states/FedEx-Home/images/2023/q4/FedEx_Home_Business_720x480.jpg" alt="Business Tools" onerror="this.src='images/business-tools.jpg'; this.onerror=null;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Solutions Section -->
+    <section class="business-solutions">
+        <div class="container">
+            <h2 class="section-title">Business Solutions</h2>
+            <div class="solutions-grid">
+                <div class="solution-card">
+                    <img src="https://placehold.co/400x300/4D148C/ffffff?text=Small+Business" alt="Small Business Solutions">
+                    <div class="solution-content">
+                        <h3>Small Business Center</h3>
+                        <p>Tools and resources designed specifically for small business needs.</p>
+                        <a href="#" class="btn btn-text">Explore Solutions <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="solution-card">
+                    <img src="https://placehold.co/400x300/4D148C/ffffff?text=E-Commerce" alt="E-Commerce Solutions">
+                    <div class="solution-content">
+                        <h3>E-Commerce Solutions</h3>
+                        <p>Shipping and fulfillment solutions for online retailers of all sizes.</p>
+                        <a href="#" class="btn btn-text">Explore Solutions <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="solution-card">
+                    <img src="https://placehold.co/400x300/4D148C/ffffff?text=Healthcare" alt="Healthcare Solutions">
+                    <div class="solution-content">
+                        <h3>Healthcare Solutions</h3>
+                        <p>Specialized shipping services for healthcare and life sciences.</p>
+                        <a href="#" class="btn btn-text">Explore Solutions <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Locations Section -->
+    <section class="locations-section">
+        <div class="container">
+            <h2 class="section-title">FedEx Locations</h2>
+            <p class="section-description">Find FedEx locations near you for shipping, printing, and more.</p>
+            
+            <div class="locations-grid">
+                <div class="location-card">
+                    <div class="location-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <h3>FedEx Office</h3>
+                    <p>Print, pack, ship, and more at FedEx Office locations.</p>
+                    <a href="#" class="btn btn-text">Find Locations <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="location-card">
+                    <div class="location-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h3>Drop Box Locations</h3>
+                    <p>Convenient drop-off locations for pre-packaged shipments.</p>
+                    <a href="#" class="btn btn-text">Find Drop Boxes <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="location-card">
+                    <div class="location-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <h3>Retail Partners</h3>
+                    <p>Ship at thousands of grocery stores, pharmacies, and other retailers.</p>
+                    <a href="#" class="btn btn-text">Find Retail Locations <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="location-card">
+                    <div class="location-icon">
+                        <i class="fas fa-truck-loading"></i>
+                    </div>
+                    <h3>Ship Centers</h3>
+                    <p>Full-service shipping centers for all your shipping needs.</p>
+                    <a href="#" class="btn btn-text">Find Ship Centers <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="locations-search">
+                <h3>Find Locations Near You</h3>
+                <form id="locations-search-form">
+                    <div class="form-group">
+                        <input type="text" id="locations-search-input" placeholder="Enter ZIP/Postal code or address" required>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Support Section -->
+    <section class="support-section">
+        <div class="container">
+            <h2 class="section-title">Customer Support</h2>
+            <p class="section-description">Get the help you need with your FedEx shipments and services.</p>
+            
+            <div class="support-grid">
+                <div class="support-card" data-support-type="help-center">
+                    <div class="support-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h3>Help Center</h3>
+                    <p>Find answers to frequently asked questions about FedEx services.</p>
+                    <a href="#" class="btn btn-text">Visit Help Center <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="support-card" data-support-type="contact-us">
+                    <div class="support-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>Contact Us</h3>
+                    <p>Reach our customer service team by phone, email, or chat.</p>
+                    <a href="#" class="btn btn-text">Contact Options <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="support-card" data-support-type="file-claim">
+                    <div class="support-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>File a Claim</h3>
+                    <p>Submit a claim for damaged, lost, or delayed shipments.</p>
+                    <a href="#" class="btn btn-text">Start a Claim <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="support-card" data-support-type="service-updates">
+                    <div class="support-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>Service Updates</h3>
+                    <p>Get the latest information on service disruptions and delays.</p>
+                    <a href="#" class="btn btn-text">View Updates <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Account Section -->
+    <section class="account-section">
+        <div class="container">
+            <div class="account-content">
+                <h2>Manage Your FedEx Account</h2>
+                <p>Access exclusive benefits and tools when you create a FedEx account.</p>
+                <ul class="account-benefits">
+                    <li><i class="fas fa-check"></i> Save time with address book and shipping preferences</li>
+                    <li><i class="fas fa-check"></i> Track all your shipments in one place</li>
+                    <li><i class="fas fa-check"></i> Get delivery notifications and updates</li>
+                    <li><i class="fas fa-check"></i> Access billing and invoice history</li>
+                    <li><i class="fas fa-check"></i> Schedule pickups and manage returns</li>
+                </ul>
+                <div class="account-actions">
+                    <a href="signup.html" class="btn btn-primary" id="create-account-btn">Create an Account</a>
+                    <a href="login.html" class="btn btn-outline" id="sign-in-btn">Sign In</a>
+                </div>
+            </div>
+            <div class="account-image">
+                <img src="images/account-management.svg" alt="FedEx Account Management">
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Ship with Confidence?</h2>
+                <p>Join thousands of satisfied customers who trust FedEx for their shipping needs.</p>
+                <div class="cta-buttons">
+                    <a href="signup.html" class="btn btn-primary btn-large">Create an Account</a>
+                    <a href="#" class="btn btn-outline btn-large">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <svg class="fedex-logo" width="120" height="40" viewBox="0 0 120 40">
+                            <path d="M0,0 L40,0 L40,40 L0,40 Z" fill="#4D148C"/>
+                            <path d="M40,0 L80,0 L80,40 L40,40 Z" fill="#FF6600"/>
+                            <path d="M8.5,12 L19,12 L19,16.5 L13,16.5 L13,18.5 L18.5,18.5 L18.5,22.5 L13,22.5 L13,28 L8.5,28 Z" fill="white"/>
+                            <path d="M20,12 L24.5,12 L24.5,23.5 L30,23.5 L30,28 L20,28 Z" fill="white"/>
+                            <path d="M30.5,12 L35,12 L38,19 L38,12 L42.5,12 L42.5,28 L38,28 L35,21 L35,28 L30.5,28 Z" fill="white"/>
+                            <path d="M44,12 L54.5,12 L54.5,16.5 L48.5,16.5 L48.5,18.5 L54,18.5 L54,22.5 L48.5,22.5 L48.5,24.5 L54.5,24.5 L54.5,28 L44,28 Z" fill="white"/>
+                            <path d="M56,12 L60.5,12 L60.5,24.5 L66,24.5 L66,28 L56,28 Z" fill="white"/>
+                            <path d="M67,28 L71.5,28 L71.5,12 L67,12 Z" fill="white"/>
+                            <path d="M73,28 L77.5,28 L77.5,12 L73,12 Z" fill="white"/>
+                        </svg>
+                    </div>
+                    <p>Your trusted partner for domestic and international shipping solutions.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="#">Express Delivery</a></li>
+                        <li><a href="#">International Shipping</a></li>
+                        <li><a href="#">Ground Shipping</a></li>
+                        <li><a href="#">Business Solutions</a></li>
+                        <li><a href="#">Freight Services</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About FedEx</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Investor Relations</a></li>
+                        <li><a href="#">Sustainability</a></li>
+                        <li><a href="#">Newsroom</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">File a Claim</a></li>
+                        <li><a href="#">Feedback</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact</h3>
+                    <address>
+                        <p><i class="fas fa-map-marker-alt"></i> FedEx Corporate Headquarters<br>Memphis, TN 38125</p>
+                        <p><i class="fas fa-phone-alt"></i> <a href="tel:+18004633339">1-800-GoFedEx</a></p>
+                        <p><i class="fas fa-envelope"></i> <a href="#">Contact Support</a></p>
+                    </address>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                <div class="footer-legal">
+                    <p>&copy; 2023 FedEx. All rights reserved.</p>
+                    <div class="legal-links">
+                        <a href="#">Terms of Use</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Cookie Settings</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/tracking.js"></script>
+    <script src="js/home.js"></script>
+    <script>
+        // Tab functionality for the main tracking widget
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+                    
+                    // Hide all tab contents
+                    tabContents.forEach(content => {
+                        content.style.display = 'none';
+                    });
+                    
+                    // Show the selected tab content
+                    const tabId = btn.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).style.display = 'block';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
