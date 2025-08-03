@@ -1,0 +1,279 @@
+/**
+ * FastShip - Shipping Rate Calculator
+ * Handles the shipping rate calculator functionality
+ */
+
+document.addEventListener('DOMContentLoaded', function() {
+    const calculatorForm = document.getElementById('rate-calculator-form');
+    const packageTypeSelect = document.getElementById('package-type');
+    const customDimensions = document.querySelector('.custom-dimensions');
+    const rateResults = document.getElementById('rate-results');
+    const rateOptions = document.querySelector('.rate-options');
+    
+    // Package dimensions presets (inches)
+    const packagePresets = {
+        'envelope': { length: 12.5, width: 9.5, height: 0.5, maxWeight: 1 },
+        'small-box': { length: 8.75, width: 5.38, height: 1.63, maxWeight: 5 },
+        'medium-box': { length: 11.25, width: 8.75, height: 6, maxWeight: 20 },
+        'large-box': { length: 12.25, width: 12.25, height: 6, maxWeight: 30 }
+    };
+    
+    // Toggle custom dimensions based on package type selection
+    if (packageTypeSelect) {
+        packageTypeSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customDimensions.style.display = 'grid';
+                
+                // Make dimension fields required
+                document.getElementById('package-length').required = true;
+                document.getElementById('package-width').required = true;
+                document.getElementById('package-height').required = true;
+            } else {
+                customDimensions.style.display = 'none';
+                
+                // Remove required attribute from dimension fields
+                document.getElementById('package-length').required = false;
+                document.getElementById('package-width').required = false;
+                document.getElementById('package-height').required = false;
+                
+                // Pre-fill dimensions if a preset is selected
+                if (packagePresets[this.value]) {
+                    document.getElementById('package-length').value = packagePresets[this.value].length;
+                    document.getElementById('package-width').value = packagePresets[this.value].width;
+                    document.getElementById('package-height').value = packagePresets[this.value].height;
+                }
+            }
+        });
+    }
+    
+    // Handle form submission
+    if (calculatorForm) {
+        calculatorForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const originZip = document.getElementById('origin-zip').value;
+            const destinationZip = document.getElementById('destination-zip').value;
+            const weight = parseFloat(document.getElementById('package-weight').value);
+            const packageType = document.getElementById('package-type').value;
+            
+            // Validate weight against package type max weight
+            if (packageType !== 'custom' && packagePresets[packageType] && weight > packagePresets[packageType].maxWeight) {
+                alert(`The selected package type can only hold up to ${packagePresets[packageType].maxWeight} lbs. Please select a larger package or reduce the weight.`);
+                return;
+            }
+            
+            // Get dimensions
+            let length, width, height;
+            if (packageType === 'custom') {
+                length = parseFloat(document.getElementById('package-length').value);
+                width = parseFloat(document.getElementById('package-width').value);
+                height = parseFloat(document.getElementById('package-height').value);
+            } else if (packagePresets[packageType]) {
+                length = packagePresets[packageType].length;
+                width = packagePresets[packageType].width;
+                height = packagePresets[packageType].height;
+            }
+            
+            // Calculate dimensional weight (length × width × height ÷ 139)
+            const dimensionalWeight = (length * width * height) / 139;
+            
+            // Use the greater of actual weight or dimensional weight
+            const billableWeight = Math.max(weight, dimensionalWeight);
+            
+            // Calculate distance (simplified for demo)
+            const distance = calculateDistance(originZip, destinationZip);
+            
+            // Calculate rates
+            const rates = calculateRates(distance, billableWeight, packageType);
+            
+            // Display results
+            displayRates(rates);
+        });
+    }
+    
+    /**
+     * Calculate estimated distance between ZIP codes
+     * This is a simplified simulation for demo purposes
+     */
+    function calculateDistance(originZip, destinationZip) {
+        // In a real application, this would call a distance API
+        // For demo purposes, we'll generate a random distance based on ZIP difference
+        const zipDiff = Math.abs(parseInt(originZip) - parseInt(destinationZip));
+        
+        // Normalize to a reasonable range (50-1500 miles)
+        let distance = (zipDiff % 1450) + 50;
+        
+        // Special case for international-looking ZIP codes (non-numeric)
+        if (isNaN(zipDiff)) {
+            distance = Math.floor(Math.random() * 3000) + 1000; // 1000-4000 miles for international
+        }
+        
+        return distance;
+    }
+    
+    /**
+     * Calculate shipping rates based on distance and weight
+     */
+    function calculateRates(distance, weight, packageType) {
+        // Base rates per service type (per pound)
+        const baseRates = {
+            'express': 1.2,
+            'priority': 0.9,
+            'ground': 0.6,
+            'economy': 0.4
+        };
+        
+        // Distance factors
+        let distanceFactor;
+        if (distance < 100) distanceFactor = 1;
+        else if (distance < 500) distanceFactor = 1.5;
+        else if (distance < 1000) distanceFactor = 2;
+        else if (distance < 2000) distanceFactor = 2.5;
+        else distanceFactor = 3;
+        
+        // Package type factors
+        let packageFactor;
+        switch (packageType) {
+            case 'envelope':
+                packageFactor = 0.8;
+                break;
+            case 'small-box':
+                packageFactor = 1;
+                break;
+            case 'medium-box':
+                packageFactor = 1.2;
+                break;
+            case 'large-box':
+                packageFactor = 1.4;
+                break;
+            case 'custom':
+                packageFactor = 1.5; // Custom packages have a premium
+                break;
+            default:
+                packageFactor = 1;
+        }
+        
+        // Calculate rates for each service type
+        const rates = [];
+        
+        // Express (1-2 day delivery)
+        const expressRate = Math.round((baseRates.express * weight * distanceFactor * packageFactor) * 100) / 100;
+        const expressDeliveryDays = distance < 500 ? 1 : 2;
+        rates.push({
+            service: 'Express',
+            price: expressRate,
+            deliveryDays: expressDeliveryDays,
+            deliveryDate: getDeliveryDate(expressDeliveryDays),
+            guaranteed: true
+        });
+        
+        // Priority (2-3 day delivery)
+        const priorityRate = Math.round((baseRates.priority * weight * distanceFactor * packageFactor) * 100) / 100;
+        const priorityDeliveryDays = distance < 300 ? 2 : 3;
+        rates.push({
+            service: 'Priority',
+            price: priorityRate,
+            deliveryDays: priorityDeliveryDays,
+            deliveryDate: getDeliveryDate(priorityDeliveryDays),
+            guaranteed: true
+        });
+        
+        // Ground (3-5 day delivery)
+        const groundRate = Math.round((baseRates.ground * weight * distanceFactor * packageFactor) * 100) / 100;
+        let groundDeliveryDays;
+        if (distance < 200) groundDeliveryDays = 3;
+        else if (distance < 600) groundDeliveryDays = 4;
+        else groundDeliveryDays = 5;
+        rates.push({
+            service: 'Ground',
+            price: groundRate,
+            deliveryDays: groundDeliveryDays,
+            deliveryDate: getDeliveryDate(groundDeliveryDays),
+            guaranteed: false
+        });
+        
+        // Economy (5-7 day delivery)
+        const economyRate = Math.round((baseRates.economy * weight * distanceFactor * packageFactor) * 100) / 100;
+        let economyDeliveryDays;
+        if (distance < 300) economyDeliveryDays = 5;
+        else if (distance < 800) economyDeliveryDays = 6;
+        else economyDeliveryDays = 7;
+        rates.push({
+            service: 'Economy',
+            price: economyRate,
+            deliveryDays: economyDeliveryDays,
+            deliveryDate: getDeliveryDate(economyDeliveryDays),
+            guaranteed: false
+        });
+        
+        return rates;
+    }
+    
+    /**
+     * Calculate estimated delivery date based on days to deliver
+     */
+    function getDeliveryDate(days) {
+        const date = new Date();
+        let businessDays = 0;
+        while (businessDays < days) {
+            date.setDate(date.getDate() + 1);
+            // Skip weekends (0 = Sunday, 6 = Saturday)
+            if (date.getDay() !== 0 && date.getDay() !== 6) {
+                businessDays++;
+            }
+        }
+        return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    }
+    
+    /**
+     * Display calculated rates in the UI
+     */
+    function displayRates(rates) {
+        // Clear previous results
+        rateOptions.innerHTML = '';
+        
+        // Create rate option cards
+        rates.forEach(rate => {
+            const rateCard = document.createElement('div');
+            rateCard.className = 'rate-card';
+            
+            // Add recommended badge to the fastest option
+            if (rate.service === 'Express') {
+                rateCard.classList.add('recommended');
+            }
+            
+            rateCard.innerHTML = `
+                <div class="rate-header">
+                    <h4>${rate.service}</h4>
+                    ${rate.service === 'Express' ? '<span class="recommended-badge">Recommended</span>' : ''}
+                </div>
+                <div class="rate-price">$${rate.price.toFixed(2)}</div>
+                <div class="rate-delivery">
+                    <p>Estimated Delivery: <strong>${rate.deliveryDate}</strong></p>
+                    <p>${rate.deliveryDays} business day${rate.deliveryDays > 1 ? 's' : ''}</p>
+                    ${rate.guaranteed ? '<p class="guaranteed"><i class="fas fa-check-circle"></i> Guaranteed delivery</p>' : ''}
+                </div>
+                <button class="btn btn-primary select-rate">Select</button>
+            `;
+            
+            rateOptions.appendChild(rateCard);
+        });
+        
+        // Add event listeners to select buttons
+        const selectButtons = document.querySelectorAll('.select-rate');
+        selectButtons.forEach((button, index) => {
+            button.addEventListener('click', function() {
+                // In a real application, this would proceed to the next step
+                // For demo purposes, we'll show an alert
+                alert(`You've selected ${rates[index].service} shipping for $${rates[index].price.toFixed(2)}. In a real application, this would proceed to the shipping details page.`);
+            });
+        });
+        
+        // Show results section
+        rateResults.style.display = 'block';
+        
+        // Scroll to results
+        rateResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+});
