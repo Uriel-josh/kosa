@@ -1,0 +1,474 @@
+/**
+ * FastShip - Package Tracking System
+ * Handles the package tracking functionality
+ */
+
+document.addEventListener('DOMContentLoaded', function() {
+    const trackingForm = document.getElementById('tracking-form');
+    
+    if (trackingForm) {
+        trackingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const trackingNumber = document.getElementById('tracking-number').value.trim();
+            
+            // Validate tracking number format
+            if (!isValidTrackingNumber(trackingNumber)) {
+                alert('Please enter a valid tracking number. FastShip tracking numbers are 12 characters long and contain only letters and numbers.');
+                return;
+            }
+            
+            // In a real application, this would make an API call to fetch tracking data
+            // For demo purposes, we'll redirect to the tracking page with the tracking number as a parameter
+            window.location.href = `tracking.html?tracking=${encodeURIComponent(trackingNumber)}`;
+        });
+    }
+    
+    // Check if we're on the tracking page
+    if (window.location.pathname.includes('tracking.html')) {
+        // Get tracking number from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const trackingNumber = urlParams.get('tracking');
+        
+        if (trackingNumber) {
+            // Display tracking number in the form if it exists
+            const trackingInput = document.getElementById('tracking-number');
+            if (trackingInput) {
+                trackingInput.value = trackingNumber;
+            }
+            
+            // Fetch and display tracking information
+            displayTrackingInfo(trackingNumber);
+        }
+        
+        // Handle multiple tracking form if it exists
+        const multiTrackingForm = document.getElementById('multi-tracking-form');
+        if (multiTrackingForm) {
+            multiTrackingForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const trackingNumbers = document.getElementById('multi-tracking-numbers').value;
+                const numbers = trackingNumbers.split('\n').map(num => num.trim()).filter(num => num !== '');
+                
+                if (numbers.length === 0) {
+                    alert('Please enter at least one tracking number.');
+                    return;
+                }
+                
+                // Validate each tracking number
+                const invalidNumbers = numbers.filter(num => !isValidTrackingNumber(num));
+                if (invalidNumbers.length > 0) {
+                    alert(`The following tracking numbers are invalid: ${invalidNumbers.join(', ')}`);
+                    return;
+                }
+                
+                // Display tracking information for each number
+                const trackingResultsContainer = document.getElementById('multi-tracking-results');
+                trackingResultsContainer.innerHTML = ''; // Clear previous results
+                
+                numbers.forEach(number => {
+                    const trackingData = getTrackingData(number);
+                    const trackingCard = createTrackingCard(trackingData);
+                    trackingResultsContainer.appendChild(trackingCard);
+                });
+                
+                // Show results section
+                trackingResultsContainer.style.display = 'block';
+                trackingResultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        }
+    }
+    
+    /**
+     * Validate tracking number format
+     */
+    function isValidTrackingNumber(trackingNumber) {
+        // FastShip tracking numbers are 12 characters long and contain only letters and numbers
+        const trackingRegex = /^[A-Za-z0-9]{12}$/;
+        return trackingRegex.test(trackingNumber);
+    }
+    
+    /**
+     * Display tracking information for a single tracking number
+     */
+    function displayTrackingInfo(trackingNumber) {
+        const trackingData = getTrackingData(trackingNumber);
+        
+        // Get tracking details container
+        const trackingDetails = document.getElementById('tracking-details');
+        if (!trackingDetails) return;
+        
+        // Show tracking details
+        trackingDetails.style.display = 'block';
+        
+        // Update tracking information
+        const packageInfo = trackingDetails.querySelector('.package-info');
+        if (packageInfo) {
+            packageInfo.innerHTML = `
+                <div class="info-row">
+                    <div class="info-label">Tracking Number:</div>
+                    <div class="info-value">${trackingData.trackingNumber}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Service Type:</div>
+                    <div class="info-value">${trackingData.serviceType}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Ship Date:</div>
+                    <div class="info-value">${trackingData.shipDate}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Estimated Delivery:</div>
+                    <div class="info-value">${trackingData.estimatedDelivery}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Status:</div>
+                    <div class="info-value status-${trackingData.status.toLowerCase().replace(' ', '-')}">${trackingData.status}</div>
+                </div>
+            `;
+        }
+        
+        // Update delivery addresses
+        const addressesContainer = trackingDetails.querySelector('.addresses');
+        if (addressesContainer) {
+            addressesContainer.innerHTML = `
+                <div class="address-card">
+                    <h4>From</h4>
+                    <p>${trackingData.sender.name}</p>
+                    <p>${trackingData.sender.address}</p>
+                    <p>${trackingData.sender.city}, ${trackingData.sender.state} ${trackingData.sender.zip}</p>
+                    <p>${trackingData.sender.country}</p>
+                </div>
+                <div class="address-card">
+                    <h4>To</h4>
+                    <p>${trackingData.recipient.name}</p>
+                    <p>${trackingData.recipient.address}</p>
+                    <p>${trackingData.recipient.city}, ${trackingData.recipient.state} ${trackingData.recipient.zip}</p>
+                    <p>${trackingData.recipient.country}</p>
+                </div>
+            `;
+        }
+        
+        // Update tracking timeline
+        const timelineContainer = trackingDetails.querySelector('.tracking-timeline');
+        if (timelineContainer) {
+            timelineContainer.innerHTML = '';
+            
+            trackingData.events.forEach((event, index) => {
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'timeline-item';
+                if (index === 0) timelineItem.classList.add('current');
+                
+                timelineItem.innerHTML = `
+                    <div class="timeline-icon">
+                        <i class="${getEventIcon(event.type)}"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">${event.date} - ${event.time}</div>
+                        <h4>${event.description}</h4>
+                        <p>${event.location}</p>
+                    </div>
+                `;
+                
+                timelineContainer.appendChild(timelineItem);
+            });
+        }
+        
+        // Update delivery map (in a real application, this would use a mapping API)
+        const mapContainer = trackingDetails.querySelector('.delivery-map');
+        if (mapContainer) {
+            mapContainer.innerHTML = `
+                <div class="map-placeholder">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <p>Interactive map would be displayed here in a production environment.</p>
+                </div>
+            `;
+        }
+    }
+    
+    /**
+     * Create a tracking card for multiple tracking results
+     */
+    function createTrackingCard(trackingData) {
+        const card = document.createElement('div');
+        card.className = 'tracking-card';
+        
+        card.innerHTML = `
+            <div class="tracking-card-header">
+                <h3>Tracking #: ${trackingData.trackingNumber}</h3>
+                <span class="status-badge status-${trackingData.status.toLowerCase().replace(' ', '-')}">${trackingData.status}</span>
+            </div>
+            <div class="tracking-card-body">
+                <div class="tracking-card-info">
+                    <div class="info-row">
+                        <div class="info-label">Service:</div>
+                        <div class="info-value">${trackingData.serviceType}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Ship Date:</div>
+                        <div class="info-value">${trackingData.shipDate}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Estimated Delivery:</div>
+                        <div class="info-value">${trackingData.estimatedDelivery}</div>
+                    </div>
+                </div>
+                <div class="tracking-card-addresses">
+                    <div class="address-summary">
+                        <div class="from">${trackingData.sender.city}, ${trackingData.sender.state}</div>
+                        <div class="arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                        <div class="to">${trackingData.recipient.city}, ${trackingData.recipient.state}</div>
+                    </div>
+                </div>
+                <div class="tracking-card-latest">
+                    <h4>Latest Update</h4>
+                    <p><strong>${trackingData.events[0].date} - ${trackingData.events[0].time}</strong></p>
+                    <p>${trackingData.events[0].description}</p>
+                    <p>${trackingData.events[0].location}</p>
+                </div>
+            </div>
+            <div class="tracking-card-footer">
+                <a href="tracking.html?tracking=${trackingData.trackingNumber}" class="btn btn-primary">View Details</a>
+            </div>
+        `;
+        
+        return card;
+    }
+    
+    /**
+     * Get icon class based on event type
+     */
+    function getEventIcon(eventType) {
+        switch (eventType) {
+            case 'shipped':
+                return 'fas fa-box';
+            case 'in_transit':
+                return 'fas fa-truck';
+            case 'out_for_delivery':
+                return 'fas fa-shipping-fast';
+            case 'delivered':
+                return 'fas fa-check-circle';
+            case 'exception':
+                return 'fas fa-exclamation-triangle';
+            case 'pickup':
+                return 'fas fa-hand-holding-box';
+            default:
+                return 'fas fa-circle';
+        }
+    }
+    
+    /**
+     * Get tracking data for a tracking number
+     * In a real application, this would make an API call to fetch the data
+     * For demo purposes, we'll generate simulated data based on the tracking number
+     */
+    function getTrackingData(trackingNumber) {
+        // Use the tracking number to seed the random data
+        const seed = trackingNumber.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+        const random = (min, max) => Math.floor((seed % 100) / 100 * (max - min + 1)) + min;
+        
+        // Generate random dates
+        const today = new Date();
+        const shipDate = new Date(today);
+        shipDate.setDate(shipDate.getDate() - random(1, 7)); // 1-7 days ago
+        
+        const estimatedDeliveryDate = new Date(shipDate);
+        estimatedDeliveryDate.setDate(shipDate.getDate() + random(2, 10)); // 2-10 days after shipment
+        
+        // Determine current status based on dates
+        let status, events;
+        const currentTime = today.getTime();
+        const deliveryTime = estimatedDeliveryDate.getTime();
+        
+        if (currentTime >= deliveryTime) {
+            // Package has been delivered
+            status = 'Delivered';
+            events = [
+                {
+                    type: 'delivered',
+                    date: formatDate(today),
+                    time: formatTime(today),
+                    description: 'Delivered',
+                    location: 'Front Door - ' + cities[random(0, cities.length - 1)]
+                }
+            ];
+        } else {
+            // Package is still in transit
+            const progress = (currentTime - shipDate.getTime()) / (deliveryTime - shipDate.getTime());
+            
+            if (progress < 0.3) {
+                status = 'Shipped';
+                events = [
+                    {
+                        type: 'in_transit',
+                        date: formatDate(today),
+                        time: formatTime(today),
+                        description: 'In Transit',
+                        location: cities[random(0, cities.length - 1)]
+                    }
+                ];
+            } else if (progress < 0.7) {
+                status = 'In Transit';
+                events = [
+                    {
+                        type: 'in_transit',
+                        date: formatDate(today),
+                        time: formatTime(today),
+                        description: 'In Transit',
+                        location: cities[random(0, cities.length - 1)]
+                    }
+                ];
+            } else if (progress < 0.9) {
+                status = 'Out For Delivery';
+                events = [
+                    {
+                        type: 'out_for_delivery',
+                        date: formatDate(today),
+                        time: formatTime(today),
+                        description: 'Out For Delivery',
+                        location: cities[random(0, cities.length - 1)]
+                    }
+                ];
+            } else {
+                // Small chance of delivery exception
+                if (random(1, 10) === 1) {
+                    status = 'Delivery Exception';
+                    events = [
+                        {
+                            type: 'exception',
+                            date: formatDate(today),
+                            time: formatTime(today),
+                            description: 'Delivery Exception - Attempted Delivery',
+                            location: cities[random(0, cities.length - 1)]
+                        }
+                    ];
+                } else {
+                    status = 'Out For Delivery';
+                    events = [
+                        {
+                            type: 'out_for_delivery',
+                            date: formatDate(today),
+                            time: formatTime(today),
+                            description: 'Out For Delivery',
+                            location: cities[random(0, cities.length - 1)]
+                        }
+                    ];
+                }
+            }
+        }
+        
+        // Add previous events
+        const transitDate = new Date(shipDate);
+        transitDate.setDate(shipDate.getDate() + 1);
+        
+        events.push(
+            {
+                type: 'shipped',
+                date: formatDate(shipDate),
+                time: formatTime(shipDate),
+                description: 'Shipment Picked Up by FastShip',
+                location: cities[random(0, cities.length - 1)]
+            }
+        );
+        
+        // Add more transit events if the package has been in transit for a while
+        if (progress > 0.3) {
+            events.push(
+                {
+                    type: 'in_transit',
+                    date: formatDate(transitDate),
+                    time: formatTime(transitDate),
+                    description: 'Departed FastShip Facility',
+                    location: cities[random(0, cities.length - 1)]
+                }
+            );
+        }
+        
+        if (progress > 0.5) {
+            const transitDate2 = new Date(transitDate);
+            transitDate2.setDate(transitDate.getDate() + 1);
+            
+            events.push(
+                {
+                    type: 'in_transit',
+                    date: formatDate(transitDate2),
+                    time: formatTime(transitDate2),
+                    description: 'Arrived at FastShip Facility',
+                    location: cities[random(0, cities.length - 1)]
+                }
+            );
+        }
+        
+        // Sort events by date (newest first)
+        events.sort((a, b) => {
+            const dateA = new Date(a.date + ' ' + a.time);
+            const dateB = new Date(b.date + ' ' + b.time);
+            return dateB - dateA;
+        });
+        
+        // Generate sender and recipient information
+        const sender = {
+            name: senderNames[random(0, senderNames.length - 1)],
+            address: `${random(100, 999)} ${streets[random(0, streets.length - 1)]}`,
+            city: cities[random(0, cities.length - 1)],
+            state: states[random(0, states.length - 1)],
+            zip: `${random(10000, 99999)}`,
+            country: 'United States'
+        };
+        
+        const recipient = {
+            name: recipientNames[random(0, recipientNames.length - 1)],
+            address: `${random(100, 999)} ${streets[random(0, streets.length - 1)]}`,
+            city: cities[random(0, cities.length - 1)],
+            state: states[random(0, states.length - 1)],
+            zip: `${random(10000, 99999)}`,
+            country: 'United States'
+        };
+        
+        // Return tracking data
+        return {
+            trackingNumber: trackingNumber,
+            serviceType: serviceTypes[random(0, serviceTypes.length - 1)],
+            shipDate: formatDate(shipDate),
+            estimatedDelivery: formatDate(estimatedDeliveryDate),
+            status: status,
+            sender: sender,
+            recipient: recipient,
+            events: events
+        };
+    }
+    
+    /**
+     * Format date as MM/DD/YYYY
+     */
+    function formatDate(date) {
+        return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+    }
+    
+    /**
+     * Format time as HH:MM AM/PM
+     */
+    function formatTime(date) {
+        let hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Convert 0 to 12
+        
+        return `${hours}:${minutes} ${ampm}`;
+    }
+    
+    // Sample data for generating random tracking information
+    const cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose', 'Austin', 'Jacksonville', 'Fort Worth', 'Columbus', 'Charlotte', 'San Francisco', 'Indianapolis', 'Seattle', 'Denver', 'Boston'];
+    
+    const states = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'];
+    
+    const streets = ['Main St', 'Oak Ave', 'Maple Dr', 'Cedar Ln', 'Pine St', 'Elm St', 'Washington Ave', 'Park Ave', 'Lake St', 'Hill Rd', 'River Rd', 'Church St', 'High St', 'Center St', 'Union St', 'Court St', 'Market St', 'Broadway', 'Water St', 'State St'];
+    
+    const senderNames = ['ABC Electronics', 'Global Supplies Inc.', 'Tech Innovations LLC', 'Fashion Forward Co.', 'Home Essentials', 'Office Solutions', 'Gourmet Foods', 'Fitness Gear Pro', 'Book Haven', 'Toy Universe', 'Pet Supplies Plus', 'Garden World', 'Auto Parts Direct', 'Craft Corner', 'Sports Unlimited'];
+    
+    const recipientNames = ['John Smith', 'Maria Garcia', 'James Johnson', 'Sarah Williams', 'David Brown', 'Jennifer Davis', 'Michael Miller', 'Lisa Wilson', 'Robert Moore', 'Patricia Taylor', 'Thomas Anderson', 'Jessica Thomas', 'Christopher Jackson', 'Ashley White', 'Matthew Harris'];
+    
+    const serviceTypes = ['FastShip Express', 'FastShip Priority', 'FastShip Ground', 'FastShip Economy', 'FastShip International'];
+});
