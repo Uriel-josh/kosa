@@ -1,0 +1,711 @@
+/**
+ * FedEx-inspired Shipping Page Functionality
+ * Handles shipping form interactions, validation, and rate calculation
+ */
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab switching functionality
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    
+    if (tabButtons.length > 0) {
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all tabs
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Show corresponding tab content
+                const tabId = this.getAttribute('data-tab');
+                
+                // Additional logic for domestic/international tab switching could be added here
+                if (tabId === 'international') {
+                    // Change state field to country field
+                    document.querySelectorAll('label[for="recipient-state"]').forEach(label => {
+                        label.textContent = 'Country';
+                    });
+                    
+                    // Replace state dropdown with country dropdown
+                    const stateSelect = document.getElementById('recipient-state');
+                    if (stateSelect) {
+                        stateSelect.innerHTML = '<option value="" selected disabled>Select Country</option>' +
+                            '<option value="US">United States</option>' +
+                            '<option value="CA">Canada</option>' +
+                            '<option value="MX">Mexico</option>' +
+                            '<option value="GB">United Kingdom</option>' +
+                            '<option value="FR">France</option>' +
+                            '<option value="DE">Germany</option>' +
+                            '<option value="JP">Japan</option>' +
+                            '<option value="CN">China</option>' +
+                            '<option value="AU">Australia</option>';
+                    }
+                    
+                    // Update service types for international
+                    const serviceSelect = document.getElementById('service-type');
+                    if (serviceSelect) {
+                        serviceSelect.innerHTML = '<option value="" selected disabled>Select Service</option>' +
+                            '<option value="international-priority">FedEx International Priority®</option>' +
+                            '<option value="international-economy">FedEx International Economy®</option>' +
+                            '<option value="international-first">FedEx International First®</option>' +
+                            '<option value="international-ground">FedEx International Ground®</option>';
+                    }
+                } else {
+                    // Reset to domestic options
+                    document.querySelectorAll('label[for="recipient-state"]').forEach(label => {
+                        label.textContent = 'State';
+                    });
+                    
+                    // Reset state dropdown
+                    const stateSelect = document.getElementById('recipient-state');
+                    if (stateSelect) {
+                        stateSelect.innerHTML = '<option value="" selected disabled>Select State</option>' +
+                            '<option value="AL">Alabama</option>' +
+                            '<option value="AK">Alaska</option>' +
+                            '<option value="AZ">Arizona</option>' +
+                            '<option value="AR">Arkansas</option>' +
+                            '<option value="CA">California</option>' +
+                            '<option value="CO">Colorado</option>' +
+                            '<option value="CT">Connecticut</option>' +
+                            '<option value="DE">Delaware</option>' +
+                            '<option value="FL">Florida</option>' +
+                            '<option value="GA">Georgia</option>' +
+                            '<option value="HI">Hawaii</option>' +
+                            '<option value="ID">Idaho</option>' +
+                            '<option value="IL">Illinois</option>' +
+                            '<option value="IN">Indiana</option>' +
+                            '<option value="IA">Iowa</option>' +
+                            '<option value="KS">Kansas</option>' +
+                            '<option value="KY">Kentucky</option>' +
+                            '<option value="LA">Louisiana</option>' +
+                            '<option value="ME">Maine</option>' +
+                            '<option value="MD">Maryland</option>' +
+                            '<option value="MA">Massachusetts</option>' +
+                            '<option value="MI">Michigan</option>' +
+                            '<option value="MN">Minnesota</option>' +
+                            '<option value="MS">Mississippi</option>' +
+                            '<option value="MO">Missouri</option>' +
+                            '<option value="MT">Montana</option>' +
+                            '<option value="NE">Nebraska</option>' +
+                            '<option value="NV">Nevada</option>' +
+                            '<option value="NH">New Hampshire</option>' +
+                            '<option value="NJ">New Jersey</option>' +
+                            '<option value="NM">New Mexico</option>' +
+                            '<option value="NY">New York</option>' +
+                            '<option value="NC">North Carolina</option>' +
+                            '<option value="ND">North Dakota</option>' +
+                            '<option value="OH">Ohio</option>' +
+                            '<option value="OK">Oklahoma</option>' +
+                            '<option value="OR">Oregon</option>' +
+                            '<option value="PA">Pennsylvania</option>' +
+                            '<option value="RI">Rhode Island</option>' +
+                            '<option value="SC">South Carolina</option>' +
+                            '<option value="SD">South Dakota</option>' +
+                            '<option value="TN">Tennessee</option>' +
+                            '<option value="TX">Texas</option>' +
+                            '<option value="UT">Utah</option>' +
+                            '<option value="VT">Vermont</option>' +
+                            '<option value="VA">Virginia</option>' +
+                            '<option value="WA">Washington</option>' +
+                            '<option value="WV">West Virginia</option>' +
+                            '<option value="WI">Wisconsin</option>' +
+                            '<option value="WY">Wyoming</option>';
+                    }
+                    
+                    // Update service types for domestic
+                    const serviceSelect = document.getElementById('service-type');
+                    if (serviceSelect) {
+                        serviceSelect.innerHTML = '<option value="" selected disabled>Select Service</option>' +
+                            '<option value="priority-overnight">FedEx Priority Overnight®</option>' +
+                            '<option value="standard-overnight">FedEx Standard Overnight®</option>' +
+                            '<option value="2day">FedEx 2Day®</option>' +
+                            '<option value="express-saver">FedEx Express Saver®</option>' +
+                            '<option value="ground">FedEx Ground®</option>';
+                    }
+                }
+            });
+        });
+    }
+    
+    // Package type change handler
+    const packageTypeSelect = document.getElementById('package-type');
+    const customDimensions = document.querySelectorAll('.custom-dimensions');
+    
+    if (packageTypeSelect && customDimensions.length > 0) {
+        packageTypeSelect.addEventListener('change', function() {
+            const selectedValue = this.value;
+            
+            // Show custom dimensions only for custom packaging
+            if (selectedValue === 'custom') {
+                customDimensions.forEach(field => {
+                    field.style.display = 'block';
+                    
+                    // Make dimension fields required
+                    const input = field.querySelector('input');
+                    if (input) {
+                        input.setAttribute('required', '');
+                    }
+                });
+            } else {
+                customDimensions.forEach(field => {
+                    field.style.display = 'none';
+                    
+                    // Remove required attribute
+                    const input = field.querySelector('input');
+                    if (input) {
+                        input.removeAttribute('required');
+                        input.value = ''; // Clear values
+                    }
+                });
+            }
+        });
+    }
+    
+    // Rate calculation modal
+    const calculateRateBtn = document.getElementById('calculate-rate');
+    const rateModal = document.getElementById('rate-modal');
+    const closeModalBtn = document.querySelector('.close-modal');
+    const modifyShipmentBtn = document.getElementById('modify-shipment');
+    
+    if (calculateRateBtn && rateModal) {
+        calculateRateBtn.addEventListener('click', function() {
+            // Validate form before showing rate
+            if (!validateShippingForm()) {
+                return;
+            }
+            
+            // Calculate shipping rate
+            calculateShippingRate();
+            
+            // Show modal
+            rateModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        });
+    }
+    
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', function() {
+            closeRateModal();
+        });
+    }
+    
+    if (modifyShipmentBtn) {
+        modifyShipmentBtn.addEventListener('click', function() {
+            closeRateModal();
+        });
+    }
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === rateModal) {
+            closeRateModal();
+        }
+    });
+    
+    // Proceed to payment button
+    const proceedToPaymentBtn = document.getElementById('proceed-to-payment');
+    if (proceedToPaymentBtn) {
+        proceedToPaymentBtn.addEventListener('click', function() {
+            alert('This would redirect to the payment page in a real application.');
+            closeRateModal();
+        });
+    }
+    
+    // Shipping form submission
+    const shippingForm = document.getElementById('shipping-form');
+    if (shippingForm) {
+        shippingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateShippingForm()) {
+                return;
+            }
+            
+            // In a real application, this would submit the form data to a server
+            alert('Shipment created successfully! In a real application, this would create a shipping label and proceed to payment.');
+        });
+    }
+    
+    // Set default ship date to today
+    const shipDateInput = document.getElementById('shipping-date');
+    if (shipDateInput) {
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0];
+        shipDateInput.value = formattedDate;
+        shipDateInput.min = formattedDate; // Prevent selecting past dates
+    }
+});
+
+/**
+ * Validate the shipping form
+ * @returns {boolean} Whether the form is valid
+ */
+function validateShippingForm() {
+    // Get form elements
+    const senderName = document.getElementById('sender-name');
+    const senderPhone = document.getElementById('sender-phone');
+    const senderEmail = document.getElementById('sender-email');
+    const senderAddress = document.getElementById('sender-address');
+    const senderCity = document.getElementById('sender-city');
+    const senderState = document.getElementById('sender-state');
+    const senderZip = document.getElementById('sender-zip');
+    
+    const recipientName = document.getElementById('recipient-name');
+    const recipientPhone = document.getElementById('recipient-phone');
+    const recipientAddress = document.getElementById('recipient-address');
+    const recipientCity = document.getElementById('recipient-city');
+    const recipientState = document.getElementById('recipient-state');
+    const recipientZip = document.getElementById('recipient-zip');
+    
+    const packageType = document.getElementById('package-type');
+    const serviceType = document.getElementById('service-type');
+    const packageWeight = document.getElementById('package-weight');
+    
+    // Check required fields
+    let isValid = true;
+    let firstInvalidField = null;
+    
+    // Sender information validation
+    if (!senderName || !senderName.value.trim()) {
+        markInvalid(senderName);
+        isValid = false;
+        firstInvalidField = firstInvalidField || senderName;
+    } else {
+        markValid(senderName);
+    }
+    
+    if (!senderPhone || !senderPhone.value.trim()) {
+        markInvalid(senderPhone);
+        isValid = false;
+        firstInvalidField = firstInvalidField || senderPhone;
+    } else {
+        markValid(senderPhone);
+    }
+    
+    if (!senderEmail || !isValidEmail(senderEmail.value)) {
+        markInvalid(senderEmail);
+        isValid = false;
+        firstInvalidField = firstInvalidField || senderEmail;
+    } else {
+        markValid(senderEmail);
+    }
+    
+    if (!senderAddress || !senderAddress.value.trim()) {
+        markInvalid(senderAddress);
+        isValid = false;
+        firstInvalidField = firstInvalidField || senderAddress;
+    } else {
+        markValid(senderAddress);
+    }
+    
+    if (!senderCity || !senderCity.value.trim()) {
+        markInvalid(senderCity);
+        isValid = false;
+        firstInvalidField = firstInvalidField || senderCity;
+    } else {
+        markValid(senderCity);
+    }
+    
+    if (!senderState || !senderState.value) {
+        markInvalid(senderState);
+        isValid = false;
+        firstInvalidField = firstInvalidField || senderState;
+    } else {
+        markValid(senderState);
+    }
+    
+    if (!senderZip || !senderZip.value.trim()) {
+        markInvalid(senderZip);
+        isValid = false;
+        firstInvalidField = firstInvalidField || senderZip;
+    } else {
+        markValid(senderZip);
+    }
+    
+    // Recipient information validation
+    if (!recipientName || !recipientName.value.trim()) {
+        markInvalid(recipientName);
+        isValid = false;
+        firstInvalidField = firstInvalidField || recipientName;
+    } else {
+        markValid(recipientName);
+    }
+    
+    if (!recipientPhone || !recipientPhone.value.trim()) {
+        markInvalid(recipientPhone);
+        isValid = false;
+        firstInvalidField = firstInvalidField || recipientPhone;
+    } else {
+        markValid(recipientPhone);
+    }
+    
+    if (!recipientAddress || !recipientAddress.value.trim()) {
+        markInvalid(recipientAddress);
+        isValid = false;
+        firstInvalidField = firstInvalidField || recipientAddress;
+    } else {
+        markValid(recipientAddress);
+    }
+    
+    if (!recipientCity || !recipientCity.value.trim()) {
+        markInvalid(recipientCity);
+        isValid = false;
+        firstInvalidField = firstInvalidField || recipientCity;
+    } else {
+        markValid(recipientCity);
+    }
+    
+    if (!recipientState || !recipientState.value) {
+        markInvalid(recipientState);
+        isValid = false;
+        firstInvalidField = firstInvalidField || recipientState;
+    } else {
+        markValid(recipientState);
+    }
+    
+    if (!recipientZip || !recipientZip.value.trim()) {
+        markInvalid(recipientZip);
+        isValid = false;
+        firstInvalidField = firstInvalidField || recipientZip;
+    } else {
+        markValid(recipientZip);
+    }
+    
+    // Package details validation
+    if (!packageType || !packageType.value) {
+        markInvalid(packageType);
+        isValid = false;
+        firstInvalidField = firstInvalidField || packageType;
+    } else {
+        markValid(packageType);
+    }
+    
+    if (!serviceType || !serviceType.value) {
+        markInvalid(serviceType);
+        isValid = false;
+        firstInvalidField = firstInvalidField || serviceType;
+    } else {
+        markValid(serviceType);
+    }
+    
+    if (!packageWeight || !packageWeight.value || packageWeight.value <= 0) {
+        markInvalid(packageWeight);
+        isValid = false;
+        firstInvalidField = firstInvalidField || packageWeight;
+    } else {
+        markValid(packageWeight);
+    }
+    
+    // If custom package is selected, validate dimensions
+    if (packageType && packageType.value === 'custom') {
+        const packageLength = document.getElementById('package-length');
+        const packageWidth = document.getElementById('package-width');
+        const packageHeight = document.getElementById('package-height');
+        
+        if (!packageLength || !packageLength.value || packageLength.value <= 0) {
+            markInvalid(packageLength);
+            isValid = false;
+            firstInvalidField = firstInvalidField || packageLength;
+        } else {
+            markValid(packageLength);
+        }
+        
+        if (!packageWidth || !packageWidth.value || packageWidth.value <= 0) {
+            markInvalid(packageWidth);
+            isValid = false;
+            firstInvalidField = firstInvalidField || packageWidth;
+        } else {
+            markValid(packageWidth);
+        }
+        
+        if (!packageHeight || !packageHeight.value || packageHeight.value <= 0) {
+            markInvalid(packageHeight);
+            isValid = false;
+            firstInvalidField = firstInvalidField || packageHeight;
+        } else {
+            markValid(packageHeight);
+        }
+    }
+    
+    // Scroll to first invalid field
+    if (firstInvalidField) {
+        firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstInvalidField.focus();
+    }
+    
+    return isValid;
+}
+
+/**
+ * Mark a form field as invalid
+ * @param {HTMLElement} field - The form field to mark
+ */
+function markInvalid(field) {
+    if (!field) return;
+    
+    field.classList.add('invalid');
+    field.style.borderColor = 'var(--error-color)';
+    
+    // Add error message if it doesn't exist
+    const fieldId = field.id;
+    const errorId = `${fieldId}-error`;
+    
+    if (!document.getElementById(errorId)) {
+        const errorMessage = document.createElement('div');
+        errorMessage.id = errorId;
+        errorMessage.className = 'error-message';
+        errorMessage.textContent = 'This field is required';
+        errorMessage.style.color = 'var(--error-color)';
+        errorMessage.style.fontSize = '0.8rem';
+        errorMessage.style.marginTop = '0.25rem';
+        
+        field.parentNode.appendChild(errorMessage);
+    }
+}
+
+/**
+ * Mark a form field as valid
+ * @param {HTMLElement} field - The form field to mark
+ */
+function markValid(field) {
+    if (!field) return;
+    
+    field.classList.remove('invalid');
+    field.style.borderColor = 'var(--gray-light)';
+    
+    // Remove error message if it exists
+    const fieldId = field.id;
+    const errorId = `${fieldId}-error`;
+    const errorMessage = document.getElementById(errorId);
+    
+    if (errorMessage) {
+        errorMessage.remove();
+    }
+}
+
+/**
+ * Validate email format
+ * @param {string} email - The email to validate
+ * @returns {boolean} Whether the email is valid
+ */
+function isValidEmail(email) {
+    if (!email) return false;
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+/**
+ * Close the rate modal
+ */
+function closeRateModal() {
+    const rateModal = document.getElementById('rate-modal');
+    if (rateModal) {
+        rateModal.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+}
+
+/**
+ * Calculate shipping rate based on form inputs
+ */
+function calculateShippingRate() {
+    // Get form values
+    const packageType = document.getElementById('package-type').value;
+    const serviceType = document.getElementById('service-type').value;
+    const packageWeight = parseFloat(document.getElementById('package-weight').value);
+    
+    // Get additional services
+    const signatureRequired = document.getElementById('signature-required').checked;
+    const saturdayDelivery = document.getElementById('saturday-delivery').checked;
+    const insurance = document.getElementById('insurance').checked;
+    
+    // Get sender and recipient locations for distance calculation
+    const senderZip = document.getElementById('sender-zip').value;
+    const recipientZip = document.getElementById('recipient-zip').value;
+    
+    // Calculate base rate based on service type and weight
+    let baseRate = 0;
+    switch (serviceType) {
+        case 'priority-overnight':
+            baseRate = 25.50 + (packageWeight * 2.75);
+            break;
+        case 'standard-overnight':
+            baseRate = 22.50 + (packageWeight * 2.50);
+            break;
+        case '2day':
+            baseRate = 18.75 + (packageWeight * 2.25);
+            break;
+        case 'express-saver':
+            baseRate = 16.50 + (packageWeight * 2.00);
+            break;
+        case 'ground':
+            baseRate = 9.75 + (packageWeight * 1.25);
+            break;
+        case 'international-priority':
+            baseRate = 45.50 + (packageWeight * 4.75);
+            break;
+        case 'international-economy':
+            baseRate = 38.75 + (packageWeight * 4.25);
+            break;
+        case 'international-first':
+            baseRate = 55.50 + (packageWeight * 5.25);
+            break;
+        case 'international-ground':
+            baseRate = 32.75 + (packageWeight * 3.75);
+            break;
+        default:
+            baseRate = 15.00 + (packageWeight * 2.00);
+    }
+    
+    // Round to 2 decimal places
+    baseRate = Math.round(baseRate * 100) / 100;
+    
+    // Calculate fuel surcharge (10% of base rate)
+    const fuelSurcharge = Math.round(baseRate * 0.10 * 100) / 100;
+    
+    // Calculate additional services cost
+    let additionalServicesCost = 0;
+    if (signatureRequired) additionalServicesCost += 5.50;
+    if (saturdayDelivery) additionalServicesCost += 16.00;
+    if (insurance) additionalServicesCost += 3.25;
+    
+    // Calculate taxes (5% of subtotal)
+    const subtotal = baseRate + fuelSurcharge + additionalServicesCost;
+    const taxes = Math.round(subtotal * 0.05 * 100) / 100;
+    
+    // Calculate total price
+    const totalPrice = Math.round((subtotal + taxes) * 100) / 100;
+    
+    // Update modal with calculated values
+    document.getElementById('modal-service-type').textContent = getServiceTypeName(serviceType);
+    document.getElementById('modal-package-type').textContent = getPackageTypeName(packageType);
+    document.getElementById('modal-weight').textContent = `${packageWeight} lbs`;
+    
+    // Calculate estimated delivery date
+    const deliveryDate = getEstimatedDeliveryDate(serviceType);
+    document.getElementById('modal-delivery-date').textContent = deliveryDate;
+    
+    // Update price breakdown
+    document.getElementById('modal-base-rate').textContent = `$${baseRate.toFixed(2)}`;
+    document.getElementById('modal-fuel-surcharge').textContent = `$${fuelSurcharge.toFixed(2)}`;
+    document.getElementById('modal-taxes').textContent = `$${taxes.toFixed(2)}`;
+    document.getElementById('modal-price').textContent = `$${totalPrice.toFixed(2)}`;
+    
+    // Show or hide additional services
+    const additionalServicesContainer = document.getElementById('modal-additional-services-container');
+    if (additionalServicesCost > 0) {
+        additionalServicesContainer.style.display = 'flex';
+        document.getElementById('modal-additional-services').textContent = `$${additionalServicesCost.toFixed(2)}`;
+    } else {
+        additionalServicesContainer.style.display = 'none';
+    }
+}
+
+/**
+ * Get the display name for a service type
+ * @param {string} serviceType - The service type code
+ * @returns {string} The display name
+ */
+function getServiceTypeName(serviceType) {
+    const serviceNames = {
+        'priority-overnight': 'FedEx Priority Overnight®',
+        'standard-overnight': 'FedEx Standard Overnight®',
+        '2day': 'FedEx 2Day®',
+        'express-saver': 'FedEx Express Saver®',
+        'ground': 'FedEx Ground®',
+        'international-priority': 'FedEx International Priority®',
+        'international-economy': 'FedEx International Economy®',
+        'international-first': 'FedEx International First®',
+        'international-ground': 'FedEx International Ground®'
+    };
+    
+    return serviceNames[serviceType] || 'Standard Shipping';
+}
+
+/**
+ * Get the display name for a package type
+ * @param {string} packageType - The package type code
+ * @returns {string} The display name
+ */
+function getPackageTypeName(packageType) {
+    const packageNames = {
+        'envelope': 'FedEx Envelope',
+        'pak': 'FedEx Pak',
+        'box-small': 'FedEx Small Box',
+        'box-medium': 'FedEx Medium Box',
+        'box-large': 'FedEx Large Box',
+        'custom': 'Your Packaging'
+    };
+    
+    return packageNames[packageType] || 'Standard Package';
+}
+
+/**
+ * Calculate estimated delivery date based on service type
+ * @param {string} serviceType - The service type code
+ * @returns {string} Formatted delivery date and time
+ */
+function getEstimatedDeliveryDate(serviceType) {
+    const today = new Date();
+    let deliveryDate = new Date(today);
+    let deliveryTime = '';
+    
+    // Add days based on service type
+    switch (serviceType) {
+        case 'priority-overnight':
+            deliveryDate.setDate(today.getDate() + 1);
+            deliveryTime = 'by 10:30 AM';
+            break;
+        case 'standard-overnight':
+            deliveryDate.setDate(today.getDate() + 1);
+            deliveryTime = 'by 3:00 PM';
+            break;
+        case '2day':
+            deliveryDate.setDate(today.getDate() + 2);
+            deliveryTime = 'by end of day';
+            break;
+        case 'express-saver':
+            deliveryDate.setDate(today.getDate() + 3);
+            deliveryTime = 'by end of day';
+            break;
+        case 'ground':
+            // Ground typically takes 1-5 business days
+            deliveryDate.setDate(today.getDate() + Math.floor(Math.random() * 5) + 1);
+            deliveryTime = 'by end of day';
+            break;
+        case 'international-priority':
+            deliveryDate.setDate(today.getDate() + 2);
+            deliveryTime = 'by end of day';
+            break;
+        case 'international-economy':
+            deliveryDate.setDate(today.getDate() + 4);
+            deliveryTime = 'by end of day';
+            break;
+        case 'international-first':
+            deliveryDate.setDate(today.getDate() + 1);
+            deliveryTime = 'by noon';
+            break;
+        case 'international-ground':
+            deliveryDate.setDate(today.getDate() + 6);
+            deliveryTime = 'by end of day';
+            break;
+        default:
+            deliveryDate.setDate(today.getDate() + 3);
+            deliveryTime = 'by end of day';
+    }
+    
+    // Skip weekends for business day services
+    if (['priority-overnight', 'standard-overnight', '2day', 'express-saver'].includes(serviceType)) {
+        // If it's Saturday, add 2 days to get to Monday
+        if (deliveryDate.getDay() === 6) deliveryDate.setDate(deliveryDate.getDate() + 2);
+        // If it's Sunday, add 1 day to get to Monday
+        else if (deliveryDate.getDay() === 0) deliveryDate.setDate(deliveryDate.getDate() + 1);
+    }
+    
+    // Format the date
+    const options = { weekday: 'short', month: 'short', day: 'numeric' };
+    const formattedDate = deliveryDate.toLocaleDateString('en-US', options);
+    
+    return `${formattedDate} ${deliveryTime}`;
+}
