@@ -1,0 +1,163 @@
+/**
+ * FedEx Homepage JavaScript
+ * Handles tab functionality, form submissions, and navigation interactions
+ */
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab functionality for the tracking widget
+    const tabs = document.querySelectorAll('.tab');
+    const trackingForms = document.querySelectorAll('.tracking-form-container');
+    
+    // Initialize - show the first tab
+    if (tabs.length > 0 && trackingForms.length > 0) {
+        tabs[0].classList.add('active');
+        trackingForms[0].classList.add('active');
+    }
+    
+    // Add click event listeners to tabs
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', function() {
+            // Remove active class from all tabs and forms
+            tabs.forEach(t => t.classList.remove('active'));
+            trackingForms.forEach(form => form.classList.remove('active'));
+            
+            // Add active class to clicked tab and corresponding form
+            this.classList.add('active');
+            trackingForms[index].classList.add('active');
+        });
+    });
+    
+    // Navigation dropdown functionality
+    const navDropdowns = document.querySelectorAll('.nav-item.has-dropdown');
+    
+    navDropdowns.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.querySelector('.dropdown-menu').classList.add('show');
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.querySelector('.dropdown-menu').classList.remove('show');
+        });
+    });
+    
+    // Tracking form submission
+    const trackingForm = document.getElementById('tracking-form');
+    if (trackingForm) {
+        trackingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const trackingNumber = document.getElementById('tracking-number').value.trim();
+            
+            if (trackingNumber) {
+                // In a real application, this would redirect to the tracking page with the tracking number
+                window.location.href = `tracking.html?tracking=${encodeURIComponent(trackingNumber)}`;
+            } else {
+                alert('Please enter a tracking number');
+            }
+        });
+    }
+    
+    // Shipping form submission
+    const shippingForm = document.getElementById('shipping-form');
+    if (shippingForm) {
+        shippingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fromZip = document.getElementById('from-zip').value.trim();
+            const toZip = document.getElementById('to-zip').value.trim();
+            
+            if (fromZip && toZip) {
+                // In a real application, this would redirect to the shipping page with the zip codes
+                window.location.href = `shipping.html?from=${encodeURIComponent(fromZip)}&to=${encodeURIComponent(toZip)}`;
+            } else {
+                alert('Please enter both origin and destination zip codes');
+            }
+        });
+    }
+    
+    // Locations form submission
+    const locationsForm = document.getElementById('locations-form');
+    if (locationsForm) {
+        locationsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const locationZip = document.getElementById('location-zip').value.trim();
+            
+            if (locationZip) {
+                // In a real application, this would redirect to a locations page with the zip code
+                alert(`Finding FedEx locations near ${locationZip}...\nThis would redirect to a locations page in a real application.`);
+            } else {
+                alert('Please enter a zip code or address');
+            }
+        });
+    }
+    
+    // Manage shipments options
+    const shipmentOptions = document.querySelectorAll('.option-card');
+    if (shipmentOptions.length > 0) {
+        shipmentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const optionType = this.getAttribute('data-option');
+                if (optionType) {
+                    alert(`Navigating to ${optionType} page`);
+                    // In a real app, you would redirect to the appropriate page
+                    // window.location.href = `${optionType}.html`;
+                }
+            });
+        });
+    }
+    
+    // Location search form in the locations section
+    const locationSearchForm = document.getElementById('locations-search-form');
+    if (locationSearchForm) {
+        locationSearchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const locationSearch = document.getElementById('locations-search-input').value;
+            if (locationSearch) {
+                alert(`Searching for FedEx locations near ${locationSearch}`);
+                // In a real app, you would redirect to a locations page with the search term
+                // window.location.href = `locations.html?search=${locationSearch}`;
+            }
+        });
+    }
+
+    // Support section card click handlers
+    const supportCards = document.querySelectorAll('.support-card');
+    if (supportCards) {
+        supportCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const supportType = this.getAttribute('data-support-type');
+                if (supportType) {
+                    // For now, just show an alert
+                    alert(`Navigating to ${supportType} support page`);
+                    // In a real app, you would redirect to the appropriate support page
+                    // window.location.href = `support.html?type=${supportType}`;
+                }
+            });
+        });
+    }
+
+    // Account section button handlers
+    const createAccountBtn = document.getElementById('create-account-btn');
+    const signInBtn = document.getElementById('sign-in-btn');
+
+    if (createAccountBtn) {
+        createAccountBtn.addEventListener('click', function() {
+            window.location.href = 'signup.html';
+        });
+    }
+
+    if (signInBtn) {
+        signInBtn.addEventListener('click', function() {
+            window.location.href = 'login.html';
+        });
+    }
+    
+    // Mobile menu toggle
+    const mobileMenuBtn = document.querySelector('.mobile-menu-button');
+    const mainNav = document.querySelector('.main-nav');
+    
+    if (mobileMenuBtn && mainNav) {
+        mobileMenuBtn.addEventListener('click', function() {
+            mainNav.classList.toggle('show');
+            this.classList.toggle('active');
+        });
+    }
+});
